@@ -15,11 +15,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +49,10 @@ import androidx.compose.ui.window.DialogProperties
 fun List() {
     var task: String by rememberSaveable { (mutableStateOf("")) }
     val listOfTasks = remember { (mutableStateListOf<String>()) }
+    //Alert Dialog state
+    var trigger by rememberSaveable { (mutableStateOf(false)) }
+    var taskToDelete by rememberSaveable { (mutableStateOf("")) }
+
 
     Column(
         modifier = Modifier
@@ -107,7 +114,8 @@ fun List() {
                         Text(text = taskItems, fontSize = 20.sp, color = Color.White)
                         Spacer(Modifier.weight(1f))
                         IconButton(onClick = {
-
+                            trigger = true
+                            taskToDelete = taskItems
                         })
                         {
                             Icon(
@@ -125,30 +133,36 @@ fun List() {
             }
         }
     }
-}
-
-
-@Composable
-fun Alerts(value: String) {
-    var trigger by rememberSaveable { (mutableStateOf(false)) }
-
     if (trigger) {
         AlertDialog(
             onDismissRequest = { trigger = false },
             title = { Text(text = "Delete task") },
             text = { Text(text = "Are you sure you want to delete this task?") },
             confirmButton = {
-                Text(
-                    text = "Yes",
-                    color = Color.Red,
-                    modifier = Modifier.clickable { trigger = false })
+                Button(
+                    onClick = {
+                        listOfTasks.remove(taskToDelete)
+                        trigger = false
+                    },
+                    colors = ButtonDefaults.buttonColors(Color.Red)
+                ) {
+                    Text(text = "Yes", fontSize = 15.sp, color = Color.White)
+                }
             },
             dismissButton = {
-                Text(
-                    text = "No",
-                    color = Color.LightGray,
-                    modifier = Modifier.clickable { trigger = false })
-            }
+                Button(
+                    onClick = { trigger = false },
+                    colors = ButtonDefaults.buttonColors(Color.Blue)
+                ) {
+                    Text(text = "No", fontSize = 15.sp, color = Color.White)
+                }
+            },
+            shape = RoundedCornerShape(15.dp)
         )
     }
 }
+
+
+
+
+
