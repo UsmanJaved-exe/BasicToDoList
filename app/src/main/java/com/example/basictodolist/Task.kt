@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,20 +49,25 @@ fun List() {
         Row(
             Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .wrapContentHeight(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
                 modifier = Modifier,
                 value = task,
                 onValueChange = { task = it },
-                placeholder = { Text(text = "Write here...", fontSize = 20.sp, color = Color.Gray) }
-            )
+                placeholder = {
+                    Text(
+                        text = "Write here...",
+                        fontSize = 20.sp,
+                        color = Color.Gray
+                    )
+                })
 
             Spacer(Modifier.weight(1f))
 
             IconButton(
-                onClick = { listOfTasks.add(task); task = "" },
-                enabled = task.isNotEmpty()
+                onClick = { listOfTasks.add(task); task = "" }, enabled = task.isNotEmpty()
             ) {
                 Icon(
                     imageVector = Icons.Default.AddCircle,
@@ -74,28 +80,39 @@ fun List() {
 
         Spacer(Modifier.height(20.dp))
 
-        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
-            items(listOfTasks) { taskItems ->
-                Row (){
-                    Text(text = taskItems, fontSize = 20.sp, color = Color.White)
-                    Spacer(Modifier.weight(1f))
-                    IconButton(onClick = { listOfTasks.remove(taskItems) }) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            tint= Color.LightGray,
-                            contentDescription = "Delete task",
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-                }
-                Spacer(Modifier.height(10.dp))
-                HorizontalDivider()
-                Spacer(Modifier.height(10.dp))
+        if (listOfTasks.isEmpty()) {
 
+            Text(
+                text = "No tasks yet",
+                fontSize = 20.sp,
+                color = Color.LightGray
+            )
+        } else {
+
+            LazyColumn(modifier = Modifier, userScrollEnabled = true) {
+
+                items(listOfTasks) { taskItems ->
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = taskItems, fontSize = 20.sp, color = Color.White)
+                        Spacer(Modifier.weight(1f))
+                        IconButton(onClick = { listOfTasks.remove(taskItems) }) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                tint = Color.LightGray,
+                                contentDescription = "Delete task",
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(5.dp))
+                    HorizontalDivider()
+                    Spacer(Modifier.height(5.dp))
+                }
             }
         }
-
     }
-
-
 }
