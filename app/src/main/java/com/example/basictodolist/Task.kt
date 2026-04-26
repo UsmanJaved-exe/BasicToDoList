@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -75,8 +75,19 @@ fun List() {
         Spacer(Modifier.height(20.dp))
 
         LazyColumn(modifier = Modifier, userScrollEnabled = true) {
-            items(listOfTasks) { listOfTasks ->
-                Text(text = listOfTasks, fontSize = 20.sp, color = Color.White)
+            items(listOfTasks) { taskItems ->
+                Row (){
+                    Text(text = taskItems, fontSize = 20.sp, color = Color.White)
+                    Spacer(Modifier.weight(1f))
+                    IconButton(onClick = { listOfTasks.remove(taskItems) }) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            tint= Color.LightGray,
+                            contentDescription = "Delete task",
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                }
                 Spacer(Modifier.height(10.dp))
                 HorizontalDivider()
                 Spacer(Modifier.height(10.dp))
