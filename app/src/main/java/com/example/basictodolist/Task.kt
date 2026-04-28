@@ -13,20 +13,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -43,17 +37,52 @@ import androidx.compose.ui.unit.sp
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun List() {
+fun Parent() {
+    //Input data
     var task: String by rememberSaveable { (mutableStateOf("")) }
+    //list of items
     val listOfTasks = remember { (mutableStateListOf<String>()) }
     //Alert Dialog state
     var trigger by rememberSaveable { (mutableStateOf(false)) }
     //storing state of task to delete using alert dialog because state hoisting is not used
     var taskToDelete by rememberSaveable { (mutableStateOf("")) }
-    //storing the state of deleted task so it can be reverted via Snackbar
+    //storing the state of deleted task so it can be reverted via Snack bar
     var deletedTask by rememberSaveable { (mutableStateOf("")) }
     //SnackBar state
     var showSnack by rememberSaveable { (mutableStateOf(false)) }
+
+    //Functionality Lambda Functions
+    //Add task Button
+    val add = {
+        listOfTasks.add(task); task = ""
+    }
+
+    //Delete task Button
+    val delete = { taskItem: String ->
+        trigger = true
+        taskToDelete = taskItem
+    }
+
+    //For Snack Bar
+    val onUndoClick = {
+        listOfTasks.add(deletedTask)
+        showSnack = false
+    }
+
+    //For AlertDialog confirmation and Snack Bar to appear
+    val onDeleteConfirm = {
+        deletedTask = taskToDelete
+        listOfTasks.remove(taskToDelete)
+
+        trigger = false
+        showSnack = true
+    }
+
+
+    //Child Composables
+    Alert(onDeleteConfirm, trigger = false)
+    Snack(onUndoClick, showSnack)
+
 
 
 
@@ -78,16 +107,14 @@ fun List() {
                 onValueChange = { task = it },
                 placeholder = {
                     Text(
-                        text = "Write here...",
-                        fontSize = 20.sp,
-                        color = Color.Gray
+                        text = "Write here...", fontSize = 20.sp, color = Color.Gray
                     )
                 })
 
             Spacer(Modifier.weight(1f))
 
             IconButton(
-                onClick = { listOfTasks.add(task); task = "" }, enabled = task.isNotEmpty()
+                onClick = { add() }, enabled = task.isNotEmpty()
             ) {
                 Icon(
                     imageVector = Icons.Default.AddCircle,
@@ -103,9 +130,7 @@ fun List() {
         if (listOfTasks.isEmpty()) {
 
             Text(
-                text = "No tasks yet",
-                fontSize = 20.sp,
-                color = Color.LightGray
+                text = "No tasks yet", fontSize = 20.sp, color = Color.LightGray
             )
         } else {
 
@@ -114,8 +139,7 @@ fun List() {
                 items(listOfTasks) { taskItems ->
 
                     Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier, verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = taskItems,
@@ -127,10 +151,8 @@ fun List() {
                         )
                         Spacer(Modifier.weight(1f))
                         IconButton(onClick = {
-                            trigger = true
-                            taskToDelete = taskItems
-                        })
-                        {
+                            delete(taskItems)
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 tint = Color.LightGray,
@@ -146,54 +168,9 @@ fun List() {
             }
         }
     }
-    if (trigger) {
-        AlertDialog(
-            onDismissRequest = { },
-            title = { Text(text = "Delete task") },
-            text = { Text(text = "Are you sure you want to delete this task?") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        deletedTask = taskToDelete
-                        listOfTasks.remove(taskToDelete)
-
-                        trigger = false
-                        showSnack = true
-                    },
-                    colors = ButtonDefaults.buttonColors(Color.Red)
-                ) {
-                    Text(text = "Yes", fontSize = 15.sp, color = Color.White)
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(Color.Blue)
-                ) {
-                    Text(text = "No", fontSize = 15.sp, color = Color.White)
-                }
-            },
-            shape = RoundedCornerShape(15.dp)
-        )
-    }
-
-    if (showSnack) {
-        Snackbar(
-            modifier = Modifier.padding(4.dp),
-            action = {
-                TextButton(onClick = {
-                    listOfTasks.add(deletedTask)
-                    showSnack = false
-                }) {
-                    Text(text = "UNDO", fontSize = 15.sp)
-                }
-            },
-            dismissAction = {},
-        ) {
-            Text(text = "Task Deleted", fontSize = 15.sp)
-        }
-    }
 }
+
+
 
 
 

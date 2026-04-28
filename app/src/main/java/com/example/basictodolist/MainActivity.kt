@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BasicToDoListTheme {
-               List()
+               Parent()
                 }
             }
         }
