@@ -1,6 +1,7 @@
 package com.example.basictodolist
 
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -13,24 +14,24 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun FAB(
-    showTextField: Boolean,
-    showAddButton: Boolean,
+
     fabClick: () -> Unit,
-    fabAction: Boolean,
-    fabHide: () -> Unit
-) {
-    FloatingActionButton(onClick = {
-        fabClick()
-        if(showTextField && showAddButton){
-            fabHide()
-        }
-    },
+
+    ) {
+    FloatingActionButton(
+        onClick = {
+            fabClick()
+
+        },
+        shape = CircleShape,
         containerColor = Color.White,
         elevation = FloatingActionButtonDefaults.elevation(20.dp)
-        ) {
-        Icon(imageVector = Icons.Default.Add,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
             contentDescription = "Add",
             tint = Color.Black,
-            modifier = Modifier.size(30.dp))
+            modifier = Modifier.size(30.dp)
+        )
     }
 }
