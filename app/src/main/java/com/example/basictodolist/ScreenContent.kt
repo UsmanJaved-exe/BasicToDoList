@@ -14,15 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,8 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -54,6 +48,13 @@ fun Parent(innerPadding: PaddingValues) {
     var deletedTask by rememberSaveable { (mutableStateOf("")) }
     //SnackBar state
     var showSnack by rememberSaveable { (mutableStateOf(false)) }
+    //Floating action Button Action
+    var fabStatus by rememberSaveable { (mutableStateOf(false)) }
+    //Show TextField
+    var showTextField by rememberSaveable { (mutableStateOf(false)) }
+    //Show add task button
+    var showAddButton by rememberSaveable { (mutableStateOf(false)) }
+
 
     //Functionality Lambda Functions
     //Add task Button
@@ -87,11 +88,23 @@ fun Parent(innerPadding: PaddingValues) {
         trigger = false
     }
 
+    //Show TextField after pressing FAB
+    val fabClick = {
+        fabStatus = true
+        showTextField = true
+        showAddButton = true
+    }
+
+    //Hide fab after textField appears
+    val fabHide = {
+        fabStatus = false
+    }
+
 
     //Child Composables
-    Alert(onDeleteConfirm, trigger,closeAlert)
+    Alert(onDeleteConfirm, trigger, closeAlert)
     Snack(onUndoClick, showSnack)
-
+    FAB(showTextField, showAddButton, fabClick, fabStatus,fabHide)
 
 
 
@@ -102,40 +115,6 @@ fun Parent(innerPadding: PaddingValues) {
             .padding(innerPadding)
             .padding(horizontal = 15.dp)
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .width(270.dp),
-                shape = RoundedCornerShape(12.dp),
-                value = task,
-                onValueChange = { task = it },
-                placeholder = {
-                    Text(
-                        text = "Write here...", fontSize = 20.sp, color = Color.Gray
-                    )
-                })
-
-            Spacer(Modifier.weight(1f))
-
-            IconButton(
-                onClick = { add() }, enabled = task.isNotEmpty()
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddCircle,
-                    tint = Color.LightGray,
-                    contentDescription = "Add task",
-                    modifier = Modifier.size(45.dp)
-                )
-            }
-        }
-
-        Spacer(Modifier.height(20.dp))
 
         if (listOfTasks.isEmpty()) {
 
@@ -144,7 +123,7 @@ fun Parent(innerPadding: PaddingValues) {
             )
         } else {
 
-            LazyColumn(modifier = Modifier, userScrollEnabled = true) {
+            LazyColumn(modifier = Modifier.weight(1f), userScrollEnabled = true) {
 
                 items(listOfTasks) { taskItems ->
 
@@ -174,6 +153,39 @@ fun Parent(innerPadding: PaddingValues) {
                     Spacer(Modifier.height(5.dp))
                     HorizontalDivider()
                     Spacer(Modifier.height(5.dp))
+                }
+            }
+
+        }
+        if (showTextField && showAddButton) {
+            fabHide()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                androidx.compose.material3.OutlinedTextField(
+                    value = task,
+                    onValueChange = { task = it },
+                    modifier = Modifier.weight(1f),
+                    label = { Text("Enter task...", color = Color.LightGray) },
+                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = Color.White,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                androidx.compose.material3.Button(
+                    onClick = add,
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Add")
                 }
             }
         }

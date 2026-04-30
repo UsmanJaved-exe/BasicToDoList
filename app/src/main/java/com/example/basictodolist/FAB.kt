@@ -9,13 +9,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun FAB() {
-    FloatingActionButton(onClick = { },
+fun FAB(
+    showTextField: Boolean,
+    showAddButton: Boolean,
+    fabClick: () -> Unit,
+    fabAction: Boolean,
+    fabHide: () -> Unit
+) {
+    FloatingActionButton(onClick = {
+        fabClick()
+        if(showTextField && showAddButton){
+            fabHide()
+        }
+    },
         containerColor = Color.White,
         elevation = FloatingActionButtonDefaults.elevation(20.dp)
         ) {

@@ -14,7 +14,7 @@ fun Screen() {
         topBar = { AppTopBar() },
         bottomBar = { AppBottomBar() },
         snackbarHost = {},
-        floatingActionButton = { FAB() },
+        floatingActionButton = { FAB(showAddButton, showTextField, fabClick, fabAction, fabHide) }
 
         ) { innerPadding ->
         Parent(innerPadding)
