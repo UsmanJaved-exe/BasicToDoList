@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,6 +70,8 @@ fun Parent(
     val listState = rememberLazyListState()
     //Async operation of lazy list to auto scroll to the most recent added task
     val scope = rememberCoroutineScope()
+    //State of task to delete with Task Complete button
+
 
 
     //Functionality Lambda Functions
@@ -79,7 +82,7 @@ fun Parent(
             task = ""
             scope.launch {
                 //scroll to the position of task in arraylist as index starts from 0,1,2,3 so we write size-1
-                listState.animateScrollToItem(listOfTasks.size-1)
+                listState.animateScrollToItem(listOfTasks.size - 1)
             }
         }
     }
@@ -124,7 +127,7 @@ fun Parent(
 
     //Child Composables
     Alert(onDeleteConfirm, trigger, closeAlert, scope, snackbarHostState)
-    //Snackbar(onUndoClick, snackbarHostState,scope)
+
 
 
     Column(
@@ -166,15 +169,29 @@ fun Parent(
                                 .width(270.dp)
                         )
                         Spacer(Modifier.weight(1f))
-                        IconButton(onClick = {
-                            delete(taskItems)
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Clear,
-                                tint = Color.LightGray,
-                                contentDescription = "Delete task",
-                                modifier = Modifier.size(30.dp)
-                            )
+
+                        Row(modifier = Modifier) {
+
+                            IconButton(onClick = {
+                                listOfTasks.remove(taskItems)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Done,
+                                    tint = Color.LightGray,
+                                    contentDescription = "Task Completed",
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
+                            IconButton(onClick = {
+                                delete(taskItems)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    tint = Color.LightGray,
+                                    contentDescription = "Delete task",
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
                         }
                     }
                     Spacer(Modifier.height(5.dp))
