@@ -9,6 +9,5 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun AppBottomBar(){
     BottomAppBar(containerColor = Color.Black) {
-
     }
 }
