@@ -40,14 +40,23 @@ fun Screen() {
         modifier = Modifier
             .fillMaxSize(),
         topBar = { AppTopBar() },
-        //bottomBar = { AppBottomBar() },
+        bottomBar = { AppBottomBar() },
+//        snackbarHost = {
+//            SnackbarHost(
+//                snackbarHostState,
+//                modifier = Modifier. androidx . compose . ui .padding(bottom = if (showTextField) 80.dp else 0.dp)
+////                    .navigationBarsPadding()
+////                    .imePadding()
+//            )
+//        },
+
         snackbarHost = {
-            SnackbarHost(
-                snackbarHostState,
-                modifier = Modifier
-                    .navigationBarsPadding()
-                    .imePadding()
-            )
+            SnackbarHost(snackbarHostState) { data ->
+                androidx.compose.material3.Snackbar(
+                    modifier = Modifier.padding(bottom = 80.dp),
+                    snackbarData = data
+                )
+            }
         },
 
         floatingActionButton = {

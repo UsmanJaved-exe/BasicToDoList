@@ -103,7 +103,7 @@ fun Parent(
             val result = snackbarHostState.showSnackbar(
                 message = "Task deleted",
                 actionLabel = "Undo",
-                duration = SnackbarDuration.Long
+                duration = SnackbarDuration.Short
             )
             when (result) {
                 SnackbarResult.Dismissed -> {
